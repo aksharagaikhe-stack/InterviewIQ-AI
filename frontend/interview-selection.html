@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Interview Setup | InterviewIQ AI</title>
+
+<link rel="stylesheet" href="css/style.css">
+
+<style>
+    body {
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .selection-container {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+    }
+
+    .selection-card {
+        width: 100%;
+        max-width: 650px;
+        padding: 40px;
+        background: #151b30;
+        border: 1px solid #282f4a;
+        border-radius: 18px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .selection-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .selection-header h1 {
+        margin-bottom: 10px;
+        font-size: 32px;
+    }
+
+    .selection-header p {
+        margin: 0;
+        color: #aeb6d1;
+        line-height: 1.6;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 13px 15px;
+        border-radius: 9px;
+        border: 1px solid #353d5c;
+        background: #0f1426;
+        color: white;
+        font-size: 15px;
+        outline: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        border-color: #6c63ff;
+    }
+
+    .form-group select option {
+        background: #151b30;
+        color: white;
+    }
+
+    .selection-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    /* Category and language are hidden until required */
+    .category-group,
+    .language-group {
+        display: none;
+    }
+
+    .category-group.show,
+    .language-group.show {
+        display: block;
+    }
+
+    .selection-note {
+        display: block;
+        margin-top: 7px;
+        color: #8d95b3;
+        font-size: 13px;
+    }
+
+    #statusMessage {
+        min-height: 22px;
+        margin: 10px 0 18px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+    .success-message {
+        color: #65e6a5;
+    }
+
+    .error-message {
+        color: #ff7d7d;
+    }
+
+    .primary-btn {
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        border-radius: 9px;
+        background: #6c63ff;
+        color: white;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .primary-btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .primary-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .back-home {
+        display: block;
+        margin-top: 20px;
+        text-align: center;
+        color: #aeb6d1;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .back-home:hover {
+        color: white;
+    }
+
+    @media (max-width: 600px) {
+        .selection-card {
+            padding: 25px 20px;
+        }
+
+        .selection-header h1 {
+            font-size: 26px;
+        }
+
+        .selection-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<div class="selection-container">
+
+    <div class="selection-card">
+
+        <div class="selection-header">
+            <h1>Set Up Your Interview</h1>
+
+            <p>
+                Choose your interview preferences and let
+                InterviewIQ AI create a personalized mock interview.
+            </p>
+        </div>
+
+        <form id="interviewSelectionForm">
+
+            <!-- INTERVIEW TYPE -->
+            <div class="form-group">
+
+                <label for="interviewType">
+                    Interview Type
+                </label>
+
+                <select id="interviewType" required>
+
+                    <option value="">
+                        Select Interview Type
+                    </option>
+
+                    <option value="technical">
+                        Technical Interview
+                    </option>
+
+                    <option value="coding">
+                        Coding Interview
+                    </option>
+
+                    <option value="hr">
+                        HR Interview
+                    </option>
+
+                    <option value="mixed">
+                        Mixed Interview
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CATEGORY -->
+            <div class="form-group category-group" id="categoryGroup">
+
+                <label for="category">
+                    Interview Category
+                </label>
+
+                <select id="category">
+
+                    <option value="">
+                        Select Category
+                    </option>
+
+                </select>
+
+                <span class="selection-note">
+                    Select the topic you want InterviewIQ AI to focus on.
+                </span>
+
+            </div>
+
+
+            <!-- ROLE -->
+            <div class="form-group">
+
+                <label for="role">
+                    Target Role
+                </label>
+
+                <select id="role" required>
+
+                    <option value="">
+                        Select Target Role
+                    </option>
+
+                    <option value="Software Developer">
+                        Software Developer
+                    </option>
+
+                    <option value="Python Developer">
+                        Python Developer
+                    </option>
+
+                    <option value="Java Developer">
+                        Java Developer
+                    </option>
+
+                    <option value="C++ Developer">
+                        C++ Developer
+                    </option>
+
+                    <option value="Data Analyst">
+                        Data Analyst
+                    </option>
+
+                    <option value="AI/ML Engineer">
+                        AI/ML Engineer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- DIFFICULTY + QUESTION COUNT -->
+            <div class="selection-row">
+
+                <div class="form-group">
+
+                    <label for="difficulty">
+                        Difficulty
+                    </label>
+
+                    <select id="difficulty" required>
+
+                        <option value="Easy">
+                            Easy
+                        </option>
+
+                        <option value="Medium" selected>
+                            Medium
+                        </option>
+
+                        <option value="Hard">
+                            Hard
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="questionCount">
+                        Number of Questions
+                    </label>
+
+                    <select id="questionCount" required>
+
+                        <option value="5">
+                            5 Questions
+                        </option>
+
+                        <option value="10" selected>
+                            10 Questions
+                        </option>
+
+                        <option value="15">
+                            15 Questions
+                        </option>
+
+                        <option value="20">
+                            20 Questions
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROGRAMMING LANGUAGE -->
+            <div class="form-group language-group" id="languageGroup">
+
+                <label for="language">
+                    Programming Language
+                </label>
+
+                <select id="language">
+
+                    <option value="">
+                        Select Programming Language
+                    </option>
+
+                    <option value="Python">
+                        Python
+                    </option>
+
+                    <option value="Java">
+                        Java
+                    </option>
+
+                    <option value="C">
+                        C
+                    </option>
+
+                    <option value="C++">
+                        C++
+                    </option>
+
+                    <option value="JavaScript">
+                        JavaScript
+                    </option>
+
+                </select>
+
+                <span class="selection-note">
+                    Required for Coding and Mixed interviews.
+                </span>
+
+            </div>
+
+
+            <!-- STATUS -->
+            <p id="statusMessage"></p>
+
+
+            <!-- START BUTTON -->
+            <button
+                type="submit"
+                id="startInterviewBtn"
+                class="primary-btn">
+
+                Start AI Interview
+
+            </button>
+
+        </form>
+
+
+        <a
+            href="index.html"
+            class="back-home">
+
+            ← Back to Home
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- JAVASCRIPT -->
+<script src="js/config.js"></script>
+<script src="js/interview-selection.js"></script>
+
+
+<!-- CATEGORY + LANGUAGE LOGIC -->
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const interviewType =
+            document.getElementById("interviewType");
+
+        const categoryGroup =
+            document.getElementById("categoryGroup");
+
+        const category =
+            document.getElementById("category");
+
+        const languageGroup =
+            document.getElementById("languageGroup");
+
+        const language =
+            document.getElementById("language");
+
+
+        const technicalCategories = [
+            "Python",
+            "C",
+            "C++",
+            "Java",
+            "OOP",
+            "DSA"
+        ];
+
+
+        function updateFields() {
+
+            const type = interviewType.value;
+
+            /* Clear old options */
+            category.innerHTML =
+                '<option value="">Select Category</option>';
+
+            /*
+             * TECHNICAL
+             */
+            if (type === "technical") {
+
+                categoryGroup.classList.add("show");
+
+                technicalCategories.forEach(function (item) {
+
+                    const option =
+                        document.createElement("option");
+
+                    option.value = item;
+                    option.textContent = item;
+
+                    category.appendChild(option);
+
+                });
+
+                category.required = true;
+
+            }
+
+            /*
+             * HR
+             */
+            else if (type === "hr") {
+
+                categoryGroup.classList.add("show");
+
+                const option =
+                    document.createElement("option");
+
+                option.value = "Behavioral";
+                option.textContent = "Behavioral";
+
+                category.appendChild(option);
+
+                category.value = "Behavioral";
+                category.required = true;
+
+            }
+
+            /*
+             * CODING
+             */
+            else if (type === "coding") {
+
+                categoryGroup.classList.remove("show");
+
+                category.required = false;
+
+                const option =
+                    document.createElement("option");
+
+                option.value = "Programming";
+                option.textContent = "Programming";
+
+                category.appendChild(option);
+
+                category.value = "Programming";
+
+            }
+
+            /*
+             * MIXED
+             */
+            else if (type === "mixed") {
+
+                categoryGroup.classList.remove("show");
+
+                category.required = false;
+
+                const option =
+                    document.createElement("option");
+
+                option.value = "Mixed";
+                option.textContent = "Mixed";
+
+                category.appendChild(option);
+
+                category.value = "Mixed";
+
+            }
+
+            /*
+             * NOTHING SELECTED
+             */
+            else {
+
+                categoryGroup.classList.remove("show");
+
+                category.required = false;
+
+            }
+
+
+            /*
+             * PROGRAMMING LANGUAGE
+             *
+             * Required only for Coding and Mixed.
+             */
+            if (
+                type === "coding" ||
+                type === "mixed"
+            ) {
+
+                languageGroup.classList.add("show");
+
+                language.required = true;
+
+            }
+
+            else {
+
+                languageGroup.classList.remove("show");
+
+                language.required = false;
+
+                language.value = "";
+
+            }
+
+        }
+
+
+        interviewType.addEventListener(
+            "change",
+            updateFields
+        );
+
+
+        updateFields();
+
+    });
+
+</script>
+```
+
+</body>
+
+</html>

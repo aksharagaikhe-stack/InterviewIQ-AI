@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>InterviewIQ AI | AI-Powered Interview Preparation</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            Interview<span>IQ</span>
+        </div>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+
+            <!-- NEW: Interview History -->
+            <a href="history.html">Interview History</a>
+        </nav>
+
+        <div class="nav-buttons">
+            <button class="login-btn"
+    onclick="window.location.href='login.html'">
+    Login
+</button>
+
+            <button class="signup-btn"
+                onclick="window.location.href='profile.html'">
+                sign up
+                
+            </button>
+        </div>
+
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section id="home" class="hero">
+
+        <div class="hero-content">
+
+            <div class="badge">
+                🤖 AI-Powered Interview Preparation
+            </div>
+
+            <h1>
+                Prepare Smarter.
+                <span>Interview Better.</span>
+            </h1>
+
+            <p>
+                Practice technical interviews with AI, receive instant
+                feedback, identify your weak areas and improve your
+                interview skills.
+            </p>
+
+            <div class="hero-buttons">
+
+                <!-- UPDATED -->
+                <button class="primary-btn"
+                    onclick="window.location.href='profile.html'">
+                    Start Your Interview →
+                </button>
+
+                <button class="secondary-btn"
+                    onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+                    Explore Features
+                </button>
+
+            </div>
+
+            <div class="hero-stats">
+
+                <div>
+                    <strong>AI</strong>
+                    <small>Powered</small>
+                </div>
+
+                <div>
+                    <strong>24/7</strong>
+                    <small>Practice</small>
+                </div>
+
+                <div>
+                    <strong>∞</strong>
+                    <small>Questions</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Interview Preview Card -->
+
+        <div class="interview-card">
+
+            <div class="card-header">
+
+                <div>
+                    <span class="status-dot"></span>
+                    AI Interviewer
+                </div>
+
+                <span>● LIVE</span>
+
+            </div>
+
+            <div class="question-box">
+
+                <small>QUESTION 01</small>
+
+                <h3>
+                    What is the difference between
+                    an array and a linked list?
+                </h3>
+
+            </div>
+
+            <div class="answer-box">
+
+                <div class="avatar">👤</div>
+
+                <div>
+                    <strong>Your Answer</strong>
+
+                    <p>
+                        An array stores elements in
+                        contiguous memory locations...
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="ai-feedback">
+
+                <div class="feedback-icon">✓</div>
+
+                <div>
+                    <strong>AI Feedback</strong>
+
+                    <p>
+                        Good explanation. Consider
+                        discussing memory allocation
+                        and insertion complexity.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="score">
+
+                <span>Current Score</span>
+
+                <strong>82%</strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURES ================= -->
+
+    <section id="features" class="section">
+
+        <div class="section-heading">
+
+            <span>FEATURES</span>
+
+            <h2>
+                Everything You Need
+                <br>
+                to Ace Your Interview
+            </h2>
+
+            <p>
+                InterviewIQ AI provides personalized interview
+                preparation designed for technical students and freshers.
+            </p>
+
+        </div>
+
+
+        <div class="features-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">🤖</div>
+
+                <h3>AI Mock Interviews</h3>
+
+                <p>
+                    Practice realistic technical interviews
+                    with an AI interviewer anytime.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">📊</div>
+
+                <h3>Smart Evaluation</h3>
+
+                <p>
+                    Get detailed analysis of your answers
+                    and identify areas that need improvement.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">🎯</div>
+
+                <h3>Personalized Feedback</h3>
+
+                <p>
+                    Receive specific suggestions based on
+                    your interview performance.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">📈</div>
+
+                <h3>Track Progress</h3>
+
+                <p>
+                    Monitor your scores and see how your
+                    interview skills improve over time.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HOW IT WORKS ================= -->
+
+    <section id="how-it-works" class="section workflow-section">
+
+        <div class="section-heading">
+
+            <span>HOW IT WORKS</span>
+
+            <h2>
+                Your Interview Journey
+            </h2>
+
+            <p>
+                A simple four-step process to become
+                interview ready.
+            </p>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">01</div>
+
+                <h3>Create Profile</h3>
+
+                <p>
+                    Tell us about your education,
+                    skills and projects.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">02</div>
+
+                <h3>Choose Interview</h3>
+
+                <p>
+                    Select your technical domain
+                    and interview difficulty.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">03</div>
+
+                <h3>Take Interview</h3>
+
+                <p>
+                    Answer questions asked by
+                    your AI interviewer.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">04</div>
+
+                <h3>Get Feedback</h3>
+
+                <p>
+                    Receive your score and a
+                    personalized improvement plan.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= ABOUT ================= -->
+
+    <section id="about" class="about-section">
+
+        <div class="about-content">
+
+            <span>ABOUT INTERVIEWIQ AI</span>
+
+            <h2>
+                Turn Interview Practice
+                Into Interview Confidence.
+            </h2>
+
+            <p>
+                Many students know technical concepts but struggle
+                to perform confidently during interviews.
+            </p>
+
+            <p>
+                InterviewIQ AI helps students practice interviews
+                in a realistic environment and understand exactly
+                what they need to improve.
+            </p>
+
+            <!-- UPDATED -->
+            <button class="primary-btn"
+                onclick="window.location.href='profile.html'">
+                Start Practicing →
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CTA ================= -->
+
+    <section class="cta">
+
+        <h2>
+            Ready to Become
+            Interview Ready?
+        </h2>
+
+        <p>
+            Start practicing today and discover
+            what you can improve.
+        </p>
+
+        <!-- UPDATED -->
+        <button class="cta-btn"
+            onclick="window.location.href='profile.html'">
+            Start Your Free Interview →
+        </button>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-logo">
+            Interview<span>IQ</span>
+        </div>
+
+        <p>
+            AI-powered interview preparation for students.
+        </p>
+
+        <p class="copyright">
+            © 2026 InterviewIQ AI. All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Student Profile | InterviewIQ AI</title>
+
+    <!-- Profile Page CSS -->
+    <link rel="stylesheet" href="css/profile.css">
+
+</head>
+
+<body>
+
+    <!-- ================= PROFILE CONTAINER ================= -->
+
+    <div class="profile-container">
+
+        <!-- ================= PROFILE CARD ================= -->
+
+        <div class="profile-card">
+
+            <h1>Create Your Profile</h1>
+
+            <p class="subtitle">
+                Tell us about yourself before starting
+                your AI interview.
+            </p>
+
+
+            <!-- ================= PROFILE FORM ================= -->
+
+            <form id="profileForm">
+
+
+                <!-- NAME -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Enter your name"
+                        required>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        required>
+
+                </div>
+
+
+                <!-- EDUCATION -->
+
+                <div class="form-group">
+
+                    <label for="education">
+                        Education
+                    </label>
+
+                    <input
+                        type="text"
+                        id="education"
+                        name="education"
+                        placeholder="e.g. B.E. Computer Engineering">
+
+                </div>
+
+
+                <!-- SKILLS -->
+
+                <div class="form-group">
+
+                    <label for="skills">
+                        Skills
+                    </label>
+
+                    <textarea
+                        id="skills"
+                        name="skills"
+                        rows="4"
+                        placeholder="e.g. Python, C++, HTML, CSS, JavaScript"></textarea>
+
+                </div>
+
+
+                <!-- STATUS MESSAGE -->
+
+                <p
+                    id="statusMessage"
+                    class="status-message">
+                </p>
+
+
+                <!-- SUBMIT BUTTON -->
+
+                <button
+                    type="submit"
+                    class="primary-btn">
+
+                    Create Profile
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="js/config.js"></script>
+    <script src="js/profile.js"></script>
+
+</body>
+
+</html>
+

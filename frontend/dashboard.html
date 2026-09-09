@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | InterviewIQ AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<body>
+
+<header class="dashboard-header">
+
+    <div class="dashboard-logo">
+        <h1>InterviewIQ AI</h1>
+        <p>AI-Powered Interview Preparation</p>
+    </div>
+
+    <div class="dashboard-user">
+        <span id="welcomeUser">Student</span>
+        <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+
+</header>
+
+
+<main class="dashboard-container">
+
+    <!-- Welcome -->
+    <section class="welcome-section">
+
+        <div>
+            <h2>Welcome back, <span id="studentName">Student</span>! 👋</h2>
+
+            <p>
+                Practice interviews, improve your skills,
+                and track your progress.
+            </p>
+        </div>
+
+        <button id="startInterviewBtn" class="primary-dashboard-btn">
+            🎤 Start New Interview
+        </button>
+
+    </section>
+
+
+    <!-- Statistics -->
+    <section class="stats-grid">
+
+        <div class="stat-card">
+            <span class="stat-icon">🎤</span>
+            <div>
+                <h3 id="totalInterviews">0</h3>
+                <p>Total Interviews</p>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <span class="stat-icon">📊</span>
+            <div>
+                <h3 id="averageScore">0.0</h3>
+                <p>Average Score</p>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <span class="stat-icon">🏆</span>
+            <div>
+                <h3 id="bestScore">0.0</h3>
+                <p>Best Score</p>
+            </div>
+        </div>
+
+
+        <div class="stat-card">
+            <span class="stat-icon">📈</span>
+            <div>
+                <h3 id="performanceStatus">Start</h3>
+                <p>Performance</p>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- Quick Actions -->
+    <section class="dashboard-section">
+
+        <h2>Quick Actions</h2>
+
+        <div class="quick-actions">
+
+            <div class="action-card" id="newInterviewCard">
+
+                <div class="action-icon">🎤</div>
+
+                <h3>New Interview</h3>
+
+                <p>
+                    Take an AI-powered mock interview
+                    based on your skills.
+                </p>
+
+                <button class="action-btn">
+                    Start Interview →
+                </button>
+
+            </div>
+
+
+            <div class="action-card" id="historyCard">
+
+                <div class="action-icon">📋</div>
+
+                <h3>Interview History</h3>
+
+                <p>
+                    Review your previous interviews,
+                    scores, and AI feedback.
+                </p>
+
+                <button class="action-btn">
+                    View History →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Recent Interviews -->
+    <section class="dashboard-section">
+
+        <div class="section-heading">
+
+            <div>
+                <h2>Recent Interviews</h2>
+
+                <p>
+                    Your latest interview performances.
+                </p>
+            </div>
+
+            <button id="viewAllHistory" class="view-history-btn">
+                View All
+            </button>
+
+        </div>
+
+
+        <div id="recentInterviews" class="recent-interviews">
+
+            <div class="empty-history">
+
+                <div class="empty-icon">🎯</div>
+
+                <h3>No interviews yet</h3>
+
+                <p>
+                    Start your first AI interview
+                    to see your performance here.
+                </p>
+
+                <button id="emptyStartBtn" class="action-btn">
+                    Start Your First Interview
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+
+</body>
+</html>
