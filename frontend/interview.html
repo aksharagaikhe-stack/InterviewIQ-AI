@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>InterviewIQ AI - Interview</title>
+
+    <link rel="stylesheet"
+          href="css/style.css">
+
+    <link rel="stylesheet"
+          href="css/interview.css">
+
+</head>
+
+
+<body>
+
+    <div class="interview-container">
+
+        <header class="interview-header">
+
+            <div>
+
+                <h1>InterviewIQ AI</h1>
+
+                <p id="interviewInfo">
+                    AI Mock Interview
+                </p>
+
+            </div>
+
+            <div class="progress-area">
+
+                <span id="questionProgress">
+                    Question 1 of 10
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <main class="interview-card">
+
+            <div class="question-section">
+
+                <p class="question-label">
+                    Interview Question
+                </p>
+
+                <h2 id="questionText">
+                    Loading question...
+                </h2>
+
+            </div>
+
+
+            <div class="answer-section">
+
+                <label for="answer">
+                    Your Answer
+                </label>
+
+                <textarea
+                    id="answer"
+                    placeholder="Type your answer here..."
+                    rows="8">
+                </textarea>
+
+                <div class="answer-info">
+
+                    <span id="wordCount">
+                        0 words
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="evaluationBox"
+                class="evaluation-box"
+                style="display: none;">
+
+                <h3>AI Feedback</h3>
+
+                <p id="feedbackText"></p>
+
+                <p id="suggestionText"></p>
+
+                <div class="scores">
+
+                    <span>
+                        Score:
+                        <strong id="scoreText">
+                            0
+                        </strong>
+                    </span>
+
+                    <span>
+                        Technical:
+                        <strong id="technicalScore">
+                            0
+                        </strong>
+                    </span>
+
+                    <span>
+                        Communication:
+                        <strong id="communicationScore">
+                            0
+                        </strong>
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="button-area">
+
+                <button
+                    id="submitAnswerBtn">
+                    Submit Answer
+                </button>
+
+                <button
+                    id="nextQuestionBtn"
+                    style="display: none;">
+                    Next Question
+                </button>
+
+                <button
+                    id="finishBtn"
+                    style="display: none;">
+                    Finish Interview
+                </button>
+
+            </div>
+
+
+            <p
+                id="statusMessage"
+                class="status-message">
+            </p>
+
+        </main>
+
+    </div>
+
+
+   <script src="js/config.js"></script>
+<script src="js/interview.js"></script>
+
+</body>
+
+</html>

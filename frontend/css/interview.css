@@ -1,0 +1,496 @@
+/* =========================================================
+   INTERVIEWIQ AI - INTERVIEW PAGE
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* =========================
+   BODY
+========================= */
+
+body {
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            #1e2757,
+            transparent 35%
+        ),
+        #080b1a;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.interview-container {
+    width: 90%;
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+    padding: 35px 0 60px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.interview-header {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    margin-bottom: 25px;
+}
+
+.interview-header h1 {
+    margin: 0 0 6px;
+
+    font-size: 30px;
+
+    letter-spacing: -0.5px;
+}
+
+.interview-header p {
+    margin: 0;
+
+    color: #aab2cf;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress-area {
+    padding: 12px 18px;
+
+    background: #151a32;
+
+    border: 1px solid #282f4a;
+
+    border-radius: 10px;
+
+    color: #dbe1ff;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   INTERVIEW CARD
+========================= */
+
+.interview-container .interview-card {
+    width: 100%;
+
+    background: rgba(17, 22, 43, 0.97);
+
+    border: 1px solid #282f4a;
+
+    padding: 40px;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+
+/* =========================
+   QUESTION
+========================= */
+
+.question-section {
+    margin-bottom: 30px;
+}
+
+.question-label {
+    margin-bottom: 10px;
+
+    color: #8d9cff;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+.question-section h2 {
+    margin: 0;
+
+    line-height: 1.5;
+
+    font-size: 25px;
+
+    color: #ffffff;
+}
+
+
+/* =========================
+   ANSWER
+========================= */
+
+.answer-section label {
+    display: block;
+
+    margin-bottom: 10px;
+
+    color: #f8fafc;
+
+    font-size: 15px;
+
+    font-weight: 700;
+}
+
+.answer-section textarea {
+    width: 100%;
+
+    min-height: 190px;
+
+    padding: 17px;
+
+    background: #080b1a;
+
+    color: #ffffff;
+
+    border: 1px solid #303653;
+
+    border-radius: 12px;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 15px;
+
+    line-height: 1.6;
+
+    resize: vertical;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.answer-section textarea::placeholder {
+    color: #727a9a;
+}
+
+.answer-section textarea:focus {
+    outline: none;
+
+    border-color: #6366f1;
+
+    box-shadow:
+        0 0 0 4px rgba(99, 102, 241, 0.10);
+}
+
+
+/* =========================
+   WORD COUNT
+========================= */
+
+.answer-info {
+    display: flex;
+
+    justify-content: flex-end;
+
+    margin-top: 8px;
+
+    color: #8f97b4;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   EVALUATION
+========================= */
+
+.evaluation-box {
+    margin-top: 30px;
+
+    padding: 25px;
+
+    background: #171d38;
+
+    border: 1px solid #303653;
+
+    border-left: 4px solid #6366f1;
+
+    border-radius: 12px;
+}
+
+.evaluation-box h3 {
+    margin: 0 0 15px;
+
+    font-size: 19px;
+
+    color: #ffffff;
+}
+
+.evaluation-box p {
+    margin: 8px 0;
+
+    color: #c4cbe0;
+
+    line-height: 1.6;
+}
+
+
+/* =========================
+   SCORES
+========================= */
+
+.scores {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 15px;
+
+    margin-top: 22px;
+}
+
+.scores span {
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 14px;
+
+    background: #0e1329;
+
+    border: 1px solid #2b3353;
+
+    border-radius: 10px;
+
+    color: #b8bfd8;
+
+    font-size: 13px;
+}
+
+.scores strong {
+    color: #8d9cff;
+
+    font-size: 18px;
+}
+
+
+/* =========================
+   BUTTON AREA
+========================= */
+
+.button-area {
+    display: flex;
+
+    gap: 12px;
+
+    flex-wrap: wrap;
+
+    margin-top: 28px;
+}
+
+.button-area button {
+    padding: 13px 22px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+
+/* =========================
+   PRIMARY BUTTONS
+========================= */
+
+#submitAnswerBtn,
+#nextQuestionBtn,
+#finishBtn {
+    background: #6366f1;
+
+    color: white;
+
+    box-shadow:
+        0 6px 15px rgba(99, 102, 241, 0.20);
+}
+
+#submitAnswerBtn:hover,
+#nextQuestionBtn:hover,
+#finishBtn:hover {
+    background: #4f46e5;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   DISABLED BUTTON
+========================= */
+
+.button-area button:disabled {
+    opacity: 0.5;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+.status-message {
+    min-height: 22px;
+
+    margin-top: 20px;
+
+    text-align: center;
+
+    color: #aab2cf;
+
+    font-size: 14px;
+}
+
+
+/* =========================
+   ERROR MESSAGE
+========================= */
+
+.status-message.error {
+    color: #fca5a5;
+}
+
+
+/* =========================
+   SUCCESS MESSAGE
+========================= */
+
+.status-message.success {
+    color: #86efac;
+}
+
+
+/* =========================
+   RESPONSIVE TABLET
+========================= */
+
+@media (max-width: 800px) {
+
+    .interview-container {
+        width: 94%;
+
+        padding-top: 25px;
+    }
+
+    .interview-header {
+        flex-direction: column;
+
+        align-items: flex-start;
+    }
+
+    .progress-area {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .interview-container .interview-card {
+        padding: 28px;
+    }
+
+    .scores {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 550px) {
+
+    .interview-container {
+        width: 94%;
+
+        padding: 20px 0 40px;
+    }
+
+    .interview-header h1 {
+        font-size: 25px;
+    }
+
+    .interview-container .interview-card {
+        padding: 22px 18px;
+
+        border-radius: 15px;
+    }
+
+    .question-section h2 {
+        font-size: 20px;
+    }
+
+    .answer-section textarea {
+        min-height: 170px;
+
+        font-size: 14px;
+    }
+
+    .button-area {
+        flex-direction: column;
+    }
+
+    .button-area button {
+        width: 100%;
+    }
+
+    .evaluation-box {
+        padding: 18px;
+    }
+}

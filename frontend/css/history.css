@@ -1,0 +1,398 @@
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:
+        #0b1020;
+
+    color: white;
+}
+
+
+header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 20px 8%;
+
+    border-bottom:
+        1px solid #252b45;
+}
+
+
+header h1 {
+
+    margin: 0;
+
+}
+
+
+button {
+
+    padding: 10px 20px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+
+main {
+
+    width: 84%;
+
+    max-width: 1100px;
+
+    margin: 40px auto;
+
+}
+
+
+.history-header {
+
+    margin-bottom: 30px;
+
+}
+
+
+.history-card {
+
+    background:
+        #151b30;
+
+    border:
+        1px solid #282f4a;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.history-top {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+}
+
+
+.history-top h3 {
+
+    margin-bottom: 5px;
+
+}
+
+
+.score {
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+}
+
+
+.history-details {
+
+    display: flex;
+
+    gap: 25px;
+
+    flex-wrap: wrap;
+
+    margin-top: 18px;
+
+    color: #b8bfd8;
+
+}
+
+
+.history-date {
+
+    margin-top: 15px;
+
+    color: #8d95b3;
+
+    font-size: 14px;
+
+}
+
+
+.empty-history {
+
+    text-align: center;
+
+    padding: 60px 20px;
+
+    background:
+        #151b30;
+
+    border-radius: 14px;
+
+}
+
+/* ================= PROGRESS SUMMARY ================= */
+
+.progress-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 20px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.summary-card {
+
+    background: #151b30;
+
+    border: 1px solid #282f4a;
+
+    border-radius: 14px;
+
+    padding: 25px;
+
+    text-align: center;
+
+}
+
+
+.summary-card span {
+
+    display: block;
+
+    color: #aeb6d1;
+
+    margin-bottom: 10px;
+
+}
+
+
+.summary-card strong {
+
+    font-size: 30px;
+
+}
+
+
+/* ================= COMPARISON ================= */
+
+.comparison-section {
+
+    margin-bottom: 40px;
+
+}
+
+
+.comparison-section h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+.progress-positive,
+.progress-negative,
+.progress-neutral,
+.no-progress {
+
+    padding: 25px;
+
+    background: #151b30;
+
+    border: 1px solid #282f4a;
+
+    border-radius: 14px;
+
+}
+
+
+.progress-positive h3,
+.progress-negative h3,
+.progress-neutral h3,
+.no-progress h3 {
+
+    margin-top: 0;
+
+}
+
+
+.progress-positive p,
+.progress-negative p,
+.progress-neutral p,
+.no-progress p {
+
+    color: #b8bfd8;
+
+}
+
+
+/* ================= SECTION TITLE ================= */
+
+.section-title {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.section-title h2 {
+
+    margin-bottom: 5px;
+
+}
+
+
+.section-title p {
+
+    color: #8d95b3;
+
+}
+
+
+.section-title button,
+.empty-history button {
+
+    padding: 11px 20px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 800px) {
+
+    .progress-summary {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .progress-summary {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .section-title {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+        gap: 15px;
+
+    }
+
+}
+
+/* ================= ANALYTICS ================= */
+
+.analytics-section {
+
+    margin-bottom: 40px;
+
+}
+
+
+.analytics-section > p {
+
+    color: #8d95b3;
+
+    margin-bottom: 25px;
+
+}
+
+
+.analytics-row {
+
+    margin-bottom: 22px;
+
+}
+
+
+.analytics-label {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+
+}
+
+
+.analytics-label strong {
+
+    font-size: 14px;
+
+}
+
+
+.progress-bar {
+
+    width: 100%;
+
+    height: 10px;
+
+    background: #252b45;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+}
+
+
+.progress-fill {
+
+    height: 100%;
+
+    border-radius: 10px;
+
+    background: #6c63ff;
+
+}

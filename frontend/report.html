@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Interview Report | InterviewIQ AI</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/report.css">
+</head>
+
+<body>
+
+    <!-- ================================
+         HEADER
+    ================================= -->
+    <header class="report-header">
+
+        <div class="header-content">
+
+            <div>
+                <h1>Interview Report</h1>
+
+                <p>
+                    AI-powered analysis of your interview performance
+                </p>
+            </div>
+
+            <a href="index.html" class="home-link">
+                Home
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================================
+         MAIN CONTENT
+    ================================= -->
+    <main class="report-container">
+
+
+        <!-- ================================
+             STUDENT + INTERVIEW INFORMATION
+        ================================= -->
+        <section class="report-section student-info">
+
+            <h2>Interview Summary</h2>
+
+            <div class="student-details">
+
+                <div class="detail-item">
+                    <span>Student</span>
+                    <strong id="studentName">
+                        Loading...
+                    </strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Interview</span>
+                    <strong id="interviewDetails">
+                        Loading...
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             OVERALL SCORE
+        ================================= -->
+        <section class="report-section overall-section">
+
+            <h2>Overall Performance</h2>
+
+            <div class="overall-score-card">
+
+                <div class="score-circle">
+
+                    <span id="overallScore">
+                        0.0
+                    </span>
+
+                    <small>/ 10</small>
+
+                </div>
+
+                <div class="performance-info">
+
+                    <h3 id="performanceMessage">
+                        Analyzing your performance...
+                    </h3>
+
+                    <p>
+                        Your overall score is calculated from
+                        multiple performance areas.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             SCORE BREAKDOWN
+        ================================= -->
+        <section class="report-section">
+
+            <h2>Performance Breakdown</h2>
+
+            <p class="section-description">
+                Detailed analysis of your interview performance.
+            </p>
+
+
+            <div class="score-grid">
+
+
+                <!-- TECHNICAL -->
+                <div class="score-card">
+
+                    <div class="score-card-header">
+
+                        <h3>Technical</h3>
+
+                        <span id="technicalScore">
+                            0.0/10
+                        </span>
+
+                    </div>
+
+                    <div class="score-progress">
+                        <div
+                            id="technicalProgress"
+                            class="score-progress-fill"
+                            style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <p>
+                        Measures your technical knowledge
+                        and correctness.
+                    </p>
+
+                </div>
+
+
+                <!-- COMMUNICATION -->
+                <div class="score-card">
+
+                    <div class="score-card-header">
+
+                        <h3>Communication</h3>
+
+                        <span id="communicationScore">
+                            0.0/10
+                        </span>
+
+                    </div>
+
+                    <div class="score-progress">
+                        <div
+                            id="communicationProgress"
+                            class="score-progress-fill"
+                            style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <p>
+                        Measures how effectively you
+                        communicate your ideas.
+                    </p>
+
+                </div>
+
+
+                <!-- RELEVANCE -->
+                <div class="score-card">
+
+                    <div class="score-card-header">
+
+                        <h3>Relevance</h3>
+
+                        <span id="relevanceScore">
+                            0.0/10
+                        </span>
+
+                    </div>
+
+                    <div class="score-progress">
+                        <div
+                            id="relevanceProgress"
+                            class="score-progress-fill"
+                            style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <p>
+                        Measures how directly your answer
+                        addresses the question.
+                    </p>
+
+                </div>
+
+
+                <!-- GRAMMAR -->
+                <div class="score-card">
+
+                    <div class="score-card-header">
+
+                        <h3>Grammar</h3>
+
+                        <span id="grammarScore">
+                            0.0/10
+                        </span>
+
+                    </div>
+
+                    <div class="score-progress">
+                        <div
+                            id="grammarProgress"
+                            class="score-progress-fill"
+                            style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <p>
+                        Measures grammar and sentence
+                        quality.
+                    </p>
+
+                </div>
+
+
+                <!-- CLARITY -->
+                <div class="score-card">
+
+                    <div class="score-card-header">
+
+                        <h3>Clarity</h3>
+
+                        <span id="clarityScore">
+                            0.0/10
+                        </span>
+
+                    </div>
+
+                    <div class="score-progress">
+                        <div
+                            id="clarityProgress"
+                            class="score-progress-fill"
+                            style="width: 0%;">
+                        </div>
+                    </div>
+
+                    <p>
+                        Measures how clearly and logically
+                        you explain your answer.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             STRENGTHS
+        ================================= -->
+        <section class="report-section">
+
+            <h2>Strengths</h2>
+
+            <p class="section-description">
+                Areas where you performed well.
+            </p>
+
+            <ul id="strengthsList" class="feedback-list">
+
+                <li>
+                    Analyzing your strengths...
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- ================================
+             WEAKNESSES
+        ================================= -->
+        <section class="report-section">
+
+            <h2>Weaknesses</h2>
+
+            <p class="section-description">
+                Areas that need improvement.
+            </p>
+
+            <ul id="weaknessesList" class="feedback-list">
+
+                <li>
+                    Analyzing your weaknesses...
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- ================================
+             SKILL GAP ANALYSIS
+        ================================= -->
+        <section class="report-section">
+
+            <h2>Skill Gap Analysis</h2>
+
+            <p class="section-description">
+                Identify the skills you should improve
+                to perform better in future interviews.
+            </p>
+
+            <div id="skillGaps">
+
+                <div class="no-skill-gap">
+
+                    <h3>Analyzing Skill Gaps...</h3>
+
+                    <p>
+                        Your personalized skill gap analysis
+                        will appear here.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             AI FEEDBACK
+        ================================= -->
+        <section class="report-section">
+
+            <h2>AI Feedback</h2>
+
+            <div class="ai-feedback-card">
+
+                <p id="aiFeedback">
+                    Your AI feedback will appear here
+                    after the interview evaluation.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================
+             PERSONALIZED SUGGESTIONS
+        ================================= -->
+        <section class="report-section">
+
+            <h2>Personalized Suggestions</h2>
+
+            <p class="section-description">
+                Follow these recommendations to improve
+                your interview performance.
+            </p>
+
+            <ul id="suggestionsList" class="feedback-list">
+
+                <li>
+                    Generating personalized suggestions...
+                </li>
+
+            </ul>
+
+        </section>
+
+
+        <!-- ================================
+             ACTION BUTTONS
+        ================================= -->
+        <section class="report-actions">
+
+            <button
+                id="practiceAgain"
+                class="primary-btn">
+
+                Practice Again
+
+            </button>
+
+
+            <button
+                id="viewHistory"
+                class="secondary-btn">
+
+                View Interview History
+
+            </button>
+
+
+            <button
+                id="backHome"
+                class="secondary-btn">
+
+                Back to Home
+
+            </button>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- ================================
+         REPORT JAVASCRIPT
+    ================================= -->
+    <script src="js/config.js"></script>
+    <script src="js/report.js"></script>
+
+</body>
+
+</html>
