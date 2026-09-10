@@ -14,7 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if (loginButton) {
         loginButton.addEventListener("click", function () {
             alert(
-                "Login functionality will be added in a future phase."
+                function handleLogin() {
+    window.location.href = "login.html";
+}
             );
         });
     }
