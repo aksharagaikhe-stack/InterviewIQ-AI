@@ -13,11 +13,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (loginButton) {
         loginButton.addEventListener("click", function () {
-            alert(
+            
                 function handleLogin() {
     window.location.href = "login.html";
 }
-            );
+            
         });
     }
 
