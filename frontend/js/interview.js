@@ -9,6 +9,218 @@ let currentQuestionIndex = 0;
 
 let answers = [];
 
+// ======================================================
+// INTERVIEW TIMER
+// ======================================================
+
+let interviewTimer = null;
+
+let remainingSeconds = 0;
+
+let interviewFinishedByTimer = false;
+
+let evaluationInProgress = false;
+
+const interviewTimerElement =
+    document.getElementById("interviewTimer");
+
+
+// Get total interview time based on question count
+function getInterviewTimeLimit() {
+
+    const questionCount =
+        interviewData.questions.length;
+
+    if (questionCount === 5) {
+        return 10 * 60;
+    }
+
+    if (questionCount === 10) {
+        return 15 * 60;
+    }
+
+    if (questionCount === 15) {
+        return 20 * 60;
+    }
+
+    if (questionCount === 20) {
+        return 25 * 60;
+    }
+
+    // Safety fallback
+    return 15 * 60;
+}
+
+
+// Format seconds as MM:SS
+function formatTime(seconds) {
+
+    const minutes =
+        Math.floor(seconds / 60);
+
+    const remaining =
+        seconds % 60;
+
+    return (
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(remaining).padStart(2, "0")
+    );
+}
+
+
+// Update timer display
+function updateTimerDisplay() {
+
+    if (!interviewTimerElement) {
+        return;
+    }
+
+    interviewTimerElement.textContent =
+        `⏱️ ${formatTime(remainingSeconds)}`;
+
+
+    // Warning when 5 minutes or less remain
+    if (
+        remainingSeconds <= 300 &&
+        remainingSeconds > 60
+    ) {
+
+        interviewTimerElement.classList.add(
+            "warning"
+        );
+
+        interviewTimerElement.classList.remove(
+            "danger"
+        );
+
+    }
+
+    // Danger when 1 minute or less remains
+    else if (
+        remainingSeconds <= 60
+    ) {
+
+        interviewTimerElement.classList.add(
+            "danger"
+        );
+
+        interviewTimerElement.classList.remove(
+            "warning"
+        );
+
+    }
+
+    else {
+
+        interviewTimerElement.classList.remove(
+            "warning"
+        );
+
+        interviewTimerElement.classList.remove(
+            "danger"
+        );
+
+    }
+}
+
+
+// Start interview timer
+function startInterviewTimer() {
+
+    remainingSeconds =
+        getInterviewTimeLimit();
+
+    updateTimerDisplay();
+
+    clearInterval(
+        interviewTimer
+    );
+
+    interviewTimer =
+        setInterval(
+            function () {
+
+                remainingSeconds--;
+
+                updateTimerDisplay();
+
+
+                if (
+                    remainingSeconds <= 0
+                ) {
+
+                    clearInterval(
+                        interviewTimer
+                    );
+
+                    interviewTimer =
+                        null;
+
+                    handleTimeUp();
+
+                }
+
+            },
+            1000
+        );
+}
+
+
+// Handle time up
+function handleTimeUp() {
+
+    if (interviewFinishedByTimer) {
+        return;
+    }
+
+    interviewFinishedByTimer = true;
+
+
+    if (submitAnswerBtn) {
+        submitAnswerBtn.disabled = true;
+    }
+
+    if (nextQuestionBtn) {
+        nextQuestionBtn.disabled = true;
+    }
+
+    if (finishBtn) {
+        finishBtn.disabled = true;
+    }
+
+    if (answer) {
+        answer.disabled = true;
+    }
+
+
+    if (statusMessage) {
+
+        statusMessage.textContent =
+            "⏰ Time's up! Your interview is being submitted...";
+
+    }
+
+
+    // If AI is currently evaluating an answer,
+    // wait for that evaluation to finish.
+    if (evaluationInProgress) {
+
+        return;
+
+    }
+
+
+    setTimeout(
+        function () {
+
+            finishInterview(true);
+
+        },
+        500
+    );
+}
+
 
 // ======================================================
 // DOM ELEMENTS
@@ -135,10 +347,11 @@ document.addEventListener(
 
             }
 
+loadInterviewInfo();
 
-            loadInterviewInfo();
+loadQuestion();
 
-            loadQuestion();
+startInterviewTimer();
 
 
         } catch (error) {
@@ -396,6 +609,12 @@ if (submitAnswerBtn) {
 
 
 async function submitAnswer() {
+
+    if (interviewFinishedByTimer) {
+        return;
+    }
+
+    evaluationInProgress = true;
 
     const studentAnswer =
         answer.value.trim();
@@ -726,8 +945,11 @@ if (finishBtn) {
 // ======================================================
 // FINISH INTERVIEW
 // ======================================================
+function finishInterview(timeExpired = false) {
 
-function finishInterview() {
+    clearInterval(interviewTimer);
+
+    interviewTimer = null;
 
     if (
         !interviewData ||
@@ -747,16 +969,17 @@ function finishInterview() {
         answers.length;
 
 
-    if (answeredQuestions === 0) {
+    if (
+    answeredQuestions === 0 &&
+    !timeExpired
+) {
 
-        alert(
-            "Please answer at least one question before finishing."
-        );
+    alert(
+        "Please answer at least one question before finishing."
+    );
 
-        return;
-
-    }
-
+    return;
+}
 
     let totalScore = 0;
 
