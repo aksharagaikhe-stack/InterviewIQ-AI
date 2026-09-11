@@ -10,15 +10,17 @@ from models.user import (
 
 from models.student import (
     create_student,
-    get_student
+    get_student,
+    get_connection
 )
 
 import os
-import sqlite3
+import psycopg
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATABASE = os.path.join(BASE_DIR, "interviewiq.db")
 
+# ======================================================
+# AUTH BLUEPRINT
+# ======================================================
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -37,6 +39,10 @@ def signup():
     password = data.get("password", "").strip()
     education = data.get("education", "").strip()
     skills = data.get("skills", "").strip()
+
+    # ==================================================
+    # VALIDATION
+    # ==================================================
 
     if not name:
         return jsonify({
@@ -76,7 +82,6 @@ def signup():
             ""
         )
 
-
         # ==================================================
         # CREATE USER ACCOUNT
         # ==================================================
@@ -90,6 +95,9 @@ def signup():
             student_id
         )
 
+        # ==================================================
+        # SUCCESS
+        # ==================================================
 
         return jsonify({
             "success": True,
@@ -98,14 +106,12 @@ def signup():
             "student_id": student_id
         }), 201
 
-
-    except sqlite3.IntegrityError:
+    except psycopg.errors.UniqueViolation:
 
         return jsonify({
             "success": False,
             "message": "An account with this email already exists."
         }), 409
-
 
     except Exception as error:
 
@@ -129,6 +135,10 @@ def login():
     email = data.get("email", "").strip().lower()
     password = data.get("password", "").strip()
 
+    # ==================================================
+    # VALIDATION
+    # ==================================================
+
     if not email:
         return jsonify({
             "success": False,
@@ -143,8 +153,11 @@ def login():
 
     try:
 
-        user = get_user_by_email(email)
+        # ==================================================
+        # FIND USER
+        # ==================================================
 
+        user = get_user_by_email(email)
 
         if user is None:
 
@@ -153,10 +166,13 @@ def login():
                 "message": "Invalid email or password."
             }), 401
 
+        # ==================================================
+        # VERIFY PASSWORD
+        # ==================================================
 
         if not verify_password(
-            user["password"],
-            password
+            password,
+            user["password"]
         ):
 
             return jsonify({
@@ -164,13 +180,11 @@ def login():
                 "message": "Invalid email or password."
             }), 401
 
-
         # ==================================================
         # GET STUDENT ID
         # ==================================================
 
         student_id = user["student_id"]
-
 
         # ==================================================
         # OLD ACCOUNT SUPPORT
@@ -184,21 +198,23 @@ def login():
 
             try:
 
-                connection = sqlite3.connect(DATABASE)
+                connection = get_connection()
 
-                connection.row_factory = sqlite3.Row
+                try:
 
-                cursor = connection.cursor()
+                    cursor = connection.cursor()
 
-                cursor.execute("""
-                    SELECT *
-                    FROM students
-                    WHERE email = ?
-                """, (user["email"],))
+                    cursor.execute("""
+                        SELECT *
+                        FROM students
+                        WHERE LOWER(email) = LOWER(%s)
+                    """, (user["email"],))
 
-                existing_student = cursor.fetchone()
+                    existing_student = cursor.fetchone()
 
-                connection.close()
+                finally:
+
+                    connection.close()
 
             except Exception as error:
 
@@ -207,10 +223,17 @@ def login():
                     error
                 )
 
+            # ==================================================
+            # EXISTING STUDENT
+            # ==================================================
 
             if existing_student:
 
                 student_id = existing_student["id"]
+
+            # ==================================================
+            # CREATE STUDENT IF NOT FOUND
+            # ==================================================
 
             else:
 
@@ -222,12 +245,14 @@ def login():
                     ""
                 )
 
+            # ==================================================
+            # LINK STUDENT TO USER
+            # ==================================================
 
             update_user_student_id(
                 user["id"],
                 student_id
             )
-
 
         # ==================================================
         # LOGIN SUCCESS
@@ -262,7 +287,6 @@ def login():
 
         }), 200
 
-
     except Exception as error:
 
         print("LOGIN ERROR:", error)
@@ -289,7 +313,6 @@ def get_user_profile(user_id):
 
     user = get_user(user_id)
 
-
     if user is None:
 
         return jsonify({
@@ -300,7 +323,6 @@ def get_user_profile(user_id):
                 "User not found."
 
         }), 404
-
 
     return jsonify({
 

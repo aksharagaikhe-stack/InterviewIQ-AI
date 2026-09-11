@@ -1,7 +1,16 @@
-
 from flask import Blueprint, request, jsonify
-from models.student import create_student, get_student
-import sqlite3
+
+from models.student import (
+    create_student,
+    get_student
+)
+
+import psycopg
+
+
+# ======================================================
+# STUDENT BLUEPRINT
+# ======================================================
 
 student_bp = Blueprint("student", __name__)
 
@@ -20,26 +29,42 @@ def create_student_profile():
     education = data.get("education", "")
     skills = data.get("skills", "")
 
-    # Validate name
+    # ==================================================
+    # VALIDATE NAME
+    # ==================================================
+
     if not name or not name.strip():
+
         return jsonify({
             "success": False,
             "message": "Name is required."
         }), 400
 
-    # Validate email
+    # ==================================================
+    # VALIDATE EMAIL
+    # ==================================================
+
     if not email or not email.strip():
+
         return jsonify({
             "success": False,
             "message": "Email is required."
         }), 400
 
+    # ==================================================
+    # CLEAN DATA
+    # ==================================================
+
     name = name.strip()
-    email = email.strip()
+    email = email.strip().lower()
     education = education.strip()
     skills = skills.strip()
 
     try:
+
+        # ==================================================
+        # CREATE STUDENT
+        # ==================================================
 
         student_id = create_student(
             name,
@@ -49,26 +74,39 @@ def create_student_profile():
             ""
         )
 
+        # ==================================================
+        # SUCCESS
+        # ==================================================
+
         return jsonify({
             "success": True,
             "message": "Student profile created successfully!",
             "student_id": student_id
         }), 201
 
-    except sqlite3.IntegrityError:
+    except psycopg.errors.UniqueViolation:
 
         return jsonify({
             "success": False,
-            "message": "This email is already registered. Please use another email address."
+            "message": (
+                "This email is already registered. "
+                "Please use another email address."
+            )
         }), 409
 
     except Exception as error:
 
-        print("PROFILE CREATION ERROR:", error)
+        print(
+            "PROFILE CREATION ERROR:",
+            error
+        )
 
         return jsonify({
             "success": False,
-            "message": "Unable to create student profile. Please try again."
+            "message": (
+                "Unable to create student profile. "
+                "Please try again."
+            )
         }), 500
 
 
@@ -76,10 +114,17 @@ def create_student_profile():
 # GET STUDENT PROFILE
 # ======================================================
 
-@student_bp.route("/api/student/<int:student_id>", methods=["GET"])
+@student_bp.route(
+    "/api/student/<int:student_id>",
+    methods=["GET"]
+)
 def get_student_profile(student_id):
 
     student = get_student(student_id)
+
+    # ==================================================
+    # STUDENT NOT FOUND
+    # ==================================================
 
     if student is None:
 
@@ -88,15 +133,33 @@ def get_student_profile(student_id):
             "message": "Student not found."
         }), 404
 
-    return jsonify({
-        "success": True,
-        "student": {
-            "id": student["id"],
-            "name": student["name"],
-            "email": student["email"],
-            "education": student["education"],
-            "skills": student["skills"],
-            "projects": student["projects"]
-        }
-    })
+    # ==================================================
+    # SUCCESS
+    # ==================================================
 
+    return jsonify({
+
+        "success": True,
+
+        "student": {
+
+            "id":
+                student["id"],
+
+            "name":
+                student["name"],
+
+            "email":
+                student["email"],
+
+            "education":
+                student["education"],
+
+            "skills":
+                student["skills"],
+
+            "projects":
+                student["projects"]
+        }
+
+    })

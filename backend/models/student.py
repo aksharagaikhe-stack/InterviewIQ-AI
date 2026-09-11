@@ -1,48 +1,61 @@
 import os
-import sqlite3
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATABASE = os.path.join(BASE_DIR, "interviewiq.db")
+import psycopg
+from psycopg.rows import dict_row
 
 
-# ==========================================
-# ============
+# ======================================================
 # DATABASE CONNECTION
 # ======================================================
 
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+
 def get_connection():
-    connection = sqlite3.connect(DATABASE)
-    connection.row_factory = sqlite3.Row
-    return connection
+
+    if not DATABASE_URL:
+        raise RuntimeError(
+            "DATABASE_URL environment variable is not configured."
+        )
+
+    return psycopg.connect(
+        DATABASE_URL,
+        row_factory=dict_row
+    )
 
 
 # ======================================================
 # STUDENT TABLE
-# Phase 3
 # ======================================================
 
 def create_table():
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS students (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            education TEXT,
-            skills TEXT,
-            projects TEXT
-        )
-    """)
+    try:
 
-    connection.commit()
-    connection.close()
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS students (
+                id SERIAL PRIMARY KEY,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                education TEXT,
+                skills TEXT,
+                projects TEXT
+            )
+        """)
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
 
 
 # ======================================================
 # CREATE STUDENT
-# Phase 3
 # ======================================================
 
 def create_student(
@@ -52,105 +65,121 @@ def create_student(
     skills,
     projects
 ):
-    connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        INSERT INTO students
-        (
+    connection = get_connection()
+
+    try:
+
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO students (
+                name,
+                email,
+                education,
+                skills,
+                projects
+            )
+            VALUES (%s, %s, %s, %s, %s)
+            RETURNING id
+        """, (
             name,
             email,
             education,
             skills,
             projects
-        )
-        VALUES (?, ?, ?, ?, ?)
-    """, (
-        name,
-        email,
-        education,
-        skills,
-        projects
-    ))
+        ))
 
-    connection.commit()
+        student_id = cursor.fetchone()["id"]
 
-    student_id = cursor.lastrowid
+        connection.commit()
 
-    connection.close()
+        return student_id
 
-    return student_id
+    finally:
+
+        connection.close()
 
 
 # ======================================================
 # GET STUDENT
-# Phase 3
 # ======================================================
 
 def get_student(student_id):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT *
-        FROM students
-        WHERE id = ?
-    """, (student_id,))
+    try:
 
-    student = cursor.fetchone()
+        cursor = connection.cursor()
 
-    connection.close()
+        cursor.execute("""
+            SELECT *
+            FROM students
+            WHERE id = %s
+        """, (student_id,))
 
-    return student
+        return cursor.fetchone()
+
+    finally:
+
+        connection.close()
 
 
 # ======================================================
 # INTERVIEW HISTORY TABLE
-# Phase 6.3
 # ======================================================
 
 def create_interview_history_table():
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS interview_history (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+    try:
 
-            student_id INTEGER NOT NULL,
+        cursor = connection.cursor()
 
-            interview_type TEXT,
-            role TEXT,
-            difficulty TEXT,
-            language TEXT,
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS interview_history (
+                id SERIAL PRIMARY KEY,
 
-            question_count INTEGER,
+                student_id INTEGER NOT NULL,
 
-            overall_score REAL,
-            technical_score REAL,
-            communication_score REAL,
-            relevance_score REAL,
-            grammar_score REAL,
-            clarity_score REAL,
+                interview_type TEXT,
+                category TEXT,
+                role TEXT,
+                difficulty TEXT,
+                language TEXT,
 
-            strengths TEXT,
-            weaknesses TEXT,
-            suggestions TEXT,
+                question_count INTEGER,
 
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                overall_score REAL,
+                technical_score REAL,
+                communication_score REAL,
+                relevance_score REAL,
+                grammar_score REAL,
+                clarity_score REAL,
 
-            FOREIGN KEY (student_id)
-            REFERENCES students(id)
-        )
-    """)
+                strengths TEXT,
+                weaknesses TEXT,
+                suggestions TEXT,
 
-    connection.commit()
-    connection.close()
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                FOREIGN KEY (student_id)
+                    REFERENCES students(id)
+                    ON DELETE CASCADE
+            )
+        """)
+
+        connection.commit()
+
+    finally:
+
+        connection.close()
 
 
 # ======================================================
 # SAVE INTERVIEW HISTORY
-# Phase 6.3
 # ======================================================
 
 def save_interview_history(
@@ -171,11 +200,38 @@ def save_interview_history(
     weaknesses,
     suggestions
 ):
-    connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        INSERT INTO interview_history (
+    connection = get_connection()
+
+    try:
+
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            INSERT INTO interview_history (
+                student_id,
+                interview_type,
+                category,
+                role,
+                difficulty,
+                language,
+                question_count,
+                overall_score,
+                technical_score,
+                communication_score,
+                relevance_score,
+                grammar_score,
+                clarity_score,
+                strengths,
+                weaknesses,
+                suggestions
+            )
+            VALUES (
+                %s, %s, %s, %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s, %s, %s, %s
+            )
+            RETURNING id
+        """, (
             student_id,
             interview_type,
             category,
@@ -192,68 +248,64 @@ def save_interview_history(
             strengths,
             weaknesses,
             suggestions
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        student_id,
-        interview_type,
-        category,
-        role,
-        difficulty,
-        language,
-        question_count,
-        overall_score,
-        technical_score,
-        communication_score,
-        relevance_score,
-        grammar_score,
-        clarity_score,
-        strengths,
-        weaknesses,
-        suggestions
-    ))
+        ))
 
-    connection.commit()
+        history_id = cursor.fetchone()["id"]
 
-    history_id = cursor.lastrowid
+        connection.commit()
 
-    connection.close()
+        return history_id
 
-    return history_id
+    finally:
+
+        connection.close()
+
+
 # ======================================================
 # GET INTERVIEW HISTORY
-# Phase 6.3
 # ======================================================
 
 def get_interview_history(student_id):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT *
-        FROM interview_history
-        WHERE student_id = ?
-        ORDER BY created_at DESC
-    """, (student_id,))
+    try:
 
-    history = cursor.fetchall()
+        cursor = connection.cursor()
 
-    connection.close()
+        cursor.execute("""
+            SELECT *
+            FROM interview_history
+            WHERE student_id = %s
+            ORDER BY created_at DESC
+        """, (student_id,))
 
-    return history
+        return cursor.fetchall()
 
+    finally:
+
+        connection.close()
+
+
+# ======================================================
+# CATEGORY COLUMN
+# ======================================================
 
 def add_category_column():
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("PRAGMA table_info(interview_history)")
-    columns = [row["name"] for row in cursor.fetchall()]
+    try:
 
-    if "category" not in columns:
-        cursor.execute(
-            "ALTER TABLE interview_history ADD COLUMN category TEXT"
-        )
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            ALTER TABLE interview_history
+            ADD COLUMN IF NOT EXISTS category TEXT
+        """)
+
         connection.commit()
 
-    connection.close()
+    finally:
+
+        connection.close()
