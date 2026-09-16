@@ -945,7 +945,7 @@ if (finishBtn) {
 // ======================================================
 // FINISH INTERVIEW
 // ======================================================
-function finishInterview(timeExpired = false) {
+async function finishInterview(timeExpired = false) {
 
     clearInterval(interviewTimer);
 
@@ -1286,16 +1286,96 @@ function finishInterview(timeExpired = false) {
     // SAVE
     // ==============================================
 
-    localStorage.setItem(
-        "interview_report",
-        JSON.stringify(report)
+// ==============================================
+// SAVE
+// ==============================================
+
+// Save report locally
+localStorage.setItem(
+    "interview_report",
+    JSON.stringify(report)
+);
+
+// Save interview history to PostgreSQL
+try {
+
+    const historyResponse = await fetch(
+        `${API_URL}/api/interview/history`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                student_id: Number(report.student_id),
+                interview_type: report.interview_type,
+                category: report.category,
+                role: report.role,
+                difficulty: report.difficulty,
+                language: report.language,
+                question_count: report.total_questions,
+
+                overall_score:
+                    report.overall_score,
+
+                technical_score:
+                    report.technical_score,
+
+                communication_score:
+                    report.communication_score,
+
+                relevance_score:
+                    report.relevance_score,
+
+                grammar_score:
+                    report.grammar_score,
+
+                clarity_score:
+                    report.clarity_score,
+
+                strengths:
+                    report.strengths,
+
+                weaknesses:
+                    report.weaknesses,
+
+                suggestions:
+                    report.suggestions
+            })
+        }
     );
 
+    const historyData =
+        await historyResponse.json();
 
-    console.log(
-        "Final Interview Report:",
-        report
+    if (
+        !historyResponse.ok ||
+        !historyData.success
+    ) {
+        console.error(
+            "History save failed:",
+            historyData.message
+        );
+    } else {
+        console.log(
+            "Interview history saved successfully!",
+            historyData.history_id
+        );
+    }
+
+} catch (error) {
+
+    console.error(
+        "Error saving interview history:",
+        error
     );
+
+}
+
+console.log(
+    "Final Interview Report:",
+    report
+);
 
 
     // ==============================================
