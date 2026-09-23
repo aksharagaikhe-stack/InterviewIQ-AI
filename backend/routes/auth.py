@@ -40,6 +40,74 @@ def signup():
     education = data.get("education", "").strip()
     skills = data.get("skills", "").strip()
 
+    if not name:
+        return jsonify({
+            "success": False,
+            "message": "Name is required."
+        }), 400
+
+    if not email:
+        return jsonify({
+            "success": False,
+            "message": "Email is required."
+        }), 400
+
+    if not password:
+        return jsonify({
+            "success": False,
+            "message": "Password is required."
+        }), 400
+
+    if len(password) < 6:
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 6 characters."
+        }), 400
+
+    try:
+
+        # Create student profile
+        student_id = create_student(
+            name,
+            email,
+            education,
+            skills,
+            ""
+        )
+
+        # Create user account
+        user_id = create_user(
+            name,
+            email,
+            password,
+            education,
+            skills,
+            student_id
+        )
+
+        return jsonify({
+            "success": True,
+            "message": "Account created successfully!",
+            "user_id": user_id,
+            "student_id": student_id
+        }), 201
+
+    except psycopg.errors.UniqueViolation:
+
+        return jsonify({
+            "success": False,
+            "message": "An account with this email already exists."
+        }), 409
+
+    except Exception as error:
+
+        print("SIGNUP ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Unable to create account. Please try again."
+        }), 500
+
     # ==================================================
     # VALIDATION
     # ==================================================
