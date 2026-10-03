@@ -4,8 +4,10 @@ import json
 
 from services.ai_service import (
     generate_ai_questions,
-    evaluate_ai_answer
+    evaluate_ai_answer,
+    evaluate_interview_batch
 )
+
 
 from services.question_generator import generate_questions
 from services.evaluator import evaluate_answer
@@ -914,7 +916,136 @@ def evaluate():
 
             }), 500
 
+# ======================================================
+# BATCH EVALUATE INTERVIEW
+# ======================================================
 
+@interview_bp.route(
+    "/api/interview/evaluate-batch",
+    methods=["POST"]
+)
+def evaluate_batch():
+
+    data = request.get_json() or {}
+
+    answers = data.get("answers", [])
+
+    student_id = data.get("student_id")
+
+    interview_type = data.get(
+        "interview_type",
+        "technical"
+    )
+
+    category = data.get("category")
+
+    role = data.get(
+        "role",
+        "Software Developer"
+    )
+
+    language = data.get("language")
+
+    if not isinstance(answers, list) or not answers:
+
+        return jsonify({
+            "success": False,
+            "message": "Please submit interview answers."
+        }), 400
+
+    if len(answers) > 20:
+
+        return jsonify({
+            "success": False,
+            "message": "Maximum 20 answers are allowed."
+        }), 400
+
+    for item in answers:
+
+        if not isinstance(item, dict):
+
+            return jsonify({
+                "success": False,
+                "message": "Invalid answer format."
+            }), 400
+
+        question = item.get("question")
+        answer = item.get("answer")
+
+        if not isinstance(question, str) or not question.strip():
+
+            return jsonify({
+                "success": False,
+                "message": "Question is missing."
+            }), 400
+
+        if not isinstance(answer, str) or not answer.strip():
+
+            return jsonify({
+                "success": False,
+                "message": "Answer is missing."
+            }), 400
+
+    student_profile = {
+        "name": "",
+        "education": "",
+        "skills": "",
+        "projects": ""
+    }
+
+    if student_id:
+
+        try:
+
+            student = get_student(int(student_id))
+
+            if not student:
+
+                return jsonify({
+                    "success": False,
+                    "message": "Student not found."
+                }), 404
+
+            student_profile = {
+                "name": student["name"],
+                "education": student["education"] or "",
+                "skills": student["skills"] or "",
+                "projects": student["projects"] or ""
+            }
+
+        except (ValueError, TypeError):
+
+            return jsonify({
+                "success": False,
+                "message": "Invalid student ID."
+            }), 400
+
+    try:
+
+        evaluations = evaluate_interview_batch(
+            student_profile=student_profile,
+            answers=answers,
+            interview_type=interview_type,
+            role=role,
+            language=language,
+            category=category
+        )
+
+        return jsonify({
+            "success": True,
+            "message": "Interview evaluated successfully.",
+            "evaluations": evaluations,
+            "source": "gemini-batch"
+        }), 200
+
+    except Exception as error:
+
+        print("Batch Evaluation Error:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Unable to evaluate the interview. Please try again."
+        }), 500
 # ======================================================
 # SAVE INTERVIEW HISTORY
 # ======================================================

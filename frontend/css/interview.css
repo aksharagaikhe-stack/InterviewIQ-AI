@@ -494,3 +494,47 @@ body {
         padding: 18px;
     }
 }
+
+/* ======================================================
+   INTERVIEW TIMER
+   ====================================================== */
+
+.interview-timer {
+    margin-top: 8px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    background: #151b30;
+    border: 1px solid #6c63ff;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    min-width: 90px;
+}
+
+.interview-timer.warning {
+    border-color: #ffb84d;
+    color: #ffb84d;
+}
+
+.interview-timer.danger {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+    animation: timerPulse 1s infinite;
+}
+
+@keyframes timerPulse {
+    50% {
+        opacity: 0.55;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .interview-timer {
+        font-size: 14px;
+        padding: 7px 10px;
+        min-width: 75px;
+    }
+
+}

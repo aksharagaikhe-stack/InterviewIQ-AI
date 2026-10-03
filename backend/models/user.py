@@ -1,132 +1,351 @@
+
 import os
 import sqlite3
+import hashlib
+from datetime import datetime, timezone
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, "interviewiq.db")
+
+# ======================================================
+# DATABASE CONFIGURATION
+# ======================================================
+
+BASE_DIR = os.path.dirname(
+    os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))
+    )
+)
+
+DATABASE_PATH = os.path.join(BASE_DIR, "interviewiq.db")
 
 
 def get_connection():
-    connection = sqlite3.connect(DATABASE)
+    connection = sqlite3.connect(DATABASE_PATH)
     connection.row_factory = sqlite3.Row
+    connection.execute("PRAGMA foreign_keys = ON")
     return connection
 
 
+# ======================================================
+# CREATE USERS TABLE
+# ======================================================
+
 def create_users_table():
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL,
-            education TEXT,
-            skills TEXT,
-            student_id INTEGER,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    """)
+    try:
+        cursor = connection.cursor()
 
-    # Add student_id to an existing users table if it does not exist
-    cursor.execute("PRAGMA table_info(users)")
-    columns = [row["name"] for row in cursor.fetchall()]
-
-    if "student_id" not in columns:
         cursor.execute("""
-            ALTER TABLE users
-            ADD COLUMN student_id INTEGER
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL,
+                education TEXT,
+                skills TEXT,
+                student_id INTEGER,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
         """)
 
-    connection.commit()
-    connection.close()
+        connection.commit()
 
+    finally:
+        connection.close()
+
+
+# ======================================================
+# CREATE USER
+# ======================================================
 
 def create_user(
     name,
     email,
     password,
-    education,
-    skills,
+    education=None,
+    skills=None,
     student_id=None
 ):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    hashed_password = generate_password_hash(password)
+    try:
+        cursor = connection.cursor()
 
-    cursor.execute("""
-        INSERT INTO users
-        (name, email, password, education, skills, student_id)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (
-        name,
-        email,
-        hashed_password,
-        education,
-        skills,
-        student_id
-    ))
+        hashed_password = generate_password_hash(password)
 
-    connection.commit()
-    user_id = cursor.lastrowid
-    connection.close()
+        cursor.execute("""
+            INSERT INTO users (
+                name,
+                email,
+                password,
+                education,
+                skills,
+                student_id
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            name,
+            email,
+            hashed_password,
+            education,
+            skills,
+            student_id
+        ))
 
-    return user_id
+        user_id = cursor.lastrowid
 
+        connection.commit()
+
+        return user_id
+
+    finally:
+        connection.close()
+
+
+# ======================================================
+# GET USER BY EMAIL
+# ======================================================
 
 def get_user_by_email(email):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT *
-        FROM users
-        WHERE email = ?
-    """, (email,))
+    try:
+        cursor = connection.cursor()
 
-    user = cursor.fetchone()
-    connection.close()
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                password,
+                education,
+                skills,
+                student_id,
+                created_at
+            FROM users
+            WHERE LOWER(email) = LOWER(?)
+        """, (email,))
 
-    return user
+        return cursor.fetchone()
+
+    finally:
+        connection.close()
 
 
-def verify_password(stored_password, entered_password):
+# ======================================================
+# VERIFY PASSWORD
+# ======================================================
+
+def verify_password(password, hashed_password):
+
     return check_password_hash(
-        stored_password,
-        entered_password
+        hashed_password,
+        password
     )
 
 
+# ======================================================
+# GET USER BY ID
+# ======================================================
+
 def get_user(user_id):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        SELECT *
-        FROM users
-        WHERE id = ?
-    """, (user_id,))
+    try:
+        cursor = connection.cursor()
 
-    user = cursor.fetchone()
-    connection.close()
+        cursor.execute("""
+            SELECT
+                id,
+                name,
+                email,
+                password,
+                education,
+                skills,
+                student_id,
+                created_at
+            FROM users
+            WHERE id = ?
+        """, (user_id,))
 
-    return user
+        return cursor.fetchone()
+
+    finally:
+        connection.close()
 
 
-def update_user_student_id(user_id, student_id):
+# ======================================================
+# UPDATE STUDENT ID
+# ======================================================
+
+def update_user_student_id(
+    user_id,
+    student_id
+):
+
     connection = get_connection()
-    cursor = connection.cursor()
 
-    cursor.execute("""
-        UPDATE users
-        SET student_id = ?
-        WHERE id = ?
-    """, (
-        student_id,
-        user_id
-    ))
+    try:
+        cursor = connection.cursor()
 
-    connection.commit()
-    connection.close()
+        cursor.execute("""
+            UPDATE users
+            SET student_id = ?
+            WHERE id = ?
+        """, (
+            student_id,
+            user_id
+        ))
+
+        connection.commit()
+
+    finally:
+        connection.close()
+
+
+# ======================================================
+# UPDATE USER PASSWORD
+# ======================================================
+
+def update_user_password(user_id, new_password):
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        hashed_password = generate_password_hash(new_password)
+
+        cursor.execute("""
+            UPDATE users
+            SET password = ?
+            WHERE id = ?
+        """, (
+            hashed_password,
+            user_id
+        ))
+
+        connection.commit()
+
+        return cursor.rowcount > 0
+
+    finally:
+        connection.close()
+
+
+# ======================================================
+# PASSWORD RESET TOKEN STORAGE
+# ======================================================
+
+def create_password_reset_table():
+
+    connection = get_connection()
+
+    try:
+        connection.execute("""
+            CREATE TABLE IF NOT EXISTS password_reset_tokens (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                token_hash TEXT NOT NULL UNIQUE,
+                expires_at TEXT NOT NULL,
+                used INTEGER DEFAULT 0,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+        """)
+
+        connection.commit()
+
+    finally:
+        connection.close()
+
+
+def save_password_reset_token(user_id, token, expires_at):
+
+    token_hash = hashlib.sha256(
+        token.encode()
+    ).hexdigest()
+
+    connection = get_connection()
+
+    try:
+        connection.execute("""
+            INSERT INTO password_reset_tokens (
+                user_id,
+                token_hash,
+                expires_at
+            )
+            VALUES (?, ?, ?)
+        """, (
+            user_id,
+            token_hash,
+            expires_at
+        ))
+
+        connection.commit()
+
+    finally:
+        connection.close()
+
+
+def reset_password_with_token(token, new_password):
+
+    token_hash = hashlib.sha256(
+        token.encode()
+    ).hexdigest()
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    hashed_password = generate_password_hash(new_password)
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.cursor()
+
+        cursor.execute("""
+            SELECT id, user_id
+            FROM password_reset_tokens
+            WHERE token_hash = ?
+              AND used = 0
+              AND expires_at > ?
+        """, (
+            token_hash,
+            now
+        ))
+
+        reset_record = cursor.fetchone()
+
+        if not reset_record:
+            return False
+
+        cursor.execute("""
+            UPDATE users
+            SET password = ?
+            WHERE id = ?
+        """, (
+            hashed_password,
+            reset_record["user_id"]
+        ))
+
+        cursor.execute("""
+            UPDATE password_reset_tokens
+            SET used = 1
+            WHERE id = ?
+        """, (reset_record["id"],))
+
+        connection.commit()
+
+        return True
+
+    except Exception:
+        connection.rollback()
+        raise
+
+    finally:
+        connection.close()

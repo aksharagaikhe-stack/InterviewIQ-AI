@@ -99,6 +99,7 @@ document.addEventListener(
         displayFeedback(
             report
         );
+        displayQuestionEvaluations(report);
 
 
         const analysis =
@@ -1536,6 +1537,127 @@ async function saveInterviewHistory(
         );
 
     }
+
+}
+
+// ======================================================
+// QUESTION-WISE EVALUATION
+// ======================================================
+
+function displayQuestionEvaluations(report) {
+
+    const container = document.getElementById(
+        "questionEvaluations"
+    );
+
+    if (!container) {
+        return;
+    }
+
+    container.innerHTML = "";
+
+    const answers = Array.isArray(report.answers)
+        ? report.answers
+        : [];
+
+    if (answers.length === 0) {
+        container.textContent =
+            "No question-wise evaluations are available.";
+        return;
+    }
+
+    answers.forEach(function (item, index) {
+
+        const evaluation = item.evaluation || {};
+
+        const card = document.createElement("div");
+        card.className = "question-evaluation-card";
+
+        function addTextSection(title, value) {
+
+            const section = document.createElement("div");
+            section.className = "question-evaluation-detail";
+
+            const heading = document.createElement("h4");
+            heading.textContent = title;
+
+            const content = document.createElement("p");
+
+            if (Array.isArray(value)) {
+                content.textContent = value.length
+                    ? value.join(", ")
+                    : "Not provided.";
+            } else {
+                content.textContent =
+                    value || "Not provided.";
+            }
+
+            section.appendChild(heading);
+            section.appendChild(content);
+            card.appendChild(section);
+        }
+
+        const title = document.createElement("h3");
+        title.textContent = `Question ${index + 1}`;
+        card.appendChild(title);
+
+        addTextSection(
+            "Question",
+            item.question
+        );
+
+        addTextSection(
+            "Your Answer",
+            item.answer
+        );
+
+        const score = document.createElement("h4");
+
+        score.textContent =
+            `Overall Score: ${Number(
+                evaluation.overall_score || 0
+            ).toFixed(1)}/10`;
+
+        card.appendChild(score);
+
+        addTextSection(
+            "Technical Score",
+            `${Number(evaluation.technical_score || 0).toFixed(1)}/10`
+        );
+
+        addTextSection(
+            "Communication Score",
+            `${Number(evaluation.communication_score || 0).toFixed(1)}/10`
+        );
+
+        addTextSection(
+            "Strengths",
+            evaluation.strengths
+        );
+
+        addTextSection(
+            "Areas of Weakness",
+            evaluation.weaknesses
+        );
+
+        addTextSection(
+            "AI Feedback",
+            evaluation.feedback
+        );
+
+        addTextSection(
+            "Suggested Improvement",
+            evaluation.suggestion
+        );
+
+        addTextSection(
+            "Better Answer",
+            evaluation.better_answer
+        );
+
+        container.appendChild(card);
+
+    });
 
 }
 

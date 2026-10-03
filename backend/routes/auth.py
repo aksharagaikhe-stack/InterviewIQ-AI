@@ -1,24 +1,29 @@
+
 from flask import Blueprint, request, jsonify
+import sqlite3
+import secrets
+
+from datetime import datetime, timedelta, timezone
 
 from models.user import (
     create_user,
     get_user_by_email,
     verify_password,
     get_user,
-    update_user_student_id
+    update_user_student_id,
+    save_password_reset_token,
+    reset_password_with_token
 )
 
 from models.student import (
     create_student,
-    get_student
+    get_connection
 )
 
-import os
-import sqlite3
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATABASE = os.path.join(BASE_DIR, "interviewiq.db")
-
+# ======================================================
+# AUTH BLUEPRINT
+# ======================================================
 
 auth_bp = Blueprint("auth", __name__)
 
@@ -64,10 +69,16 @@ def signup():
 
     try:
 
-        # ==================================================
-        # CREATE STUDENT PROFILE
-        # ==================================================
+        # Check whether account already exists
+        existing_user = get_user_by_email(email)
 
+        if existing_user:
+            return jsonify({
+                "success": False,
+                "message": "An account with this email already exists."
+            }), 409
+
+        # Create student profile
         student_id = create_student(
             name,
             email,
@@ -76,11 +87,7 @@ def signup():
             ""
         )
 
-
-        # ==================================================
-        # CREATE USER ACCOUNT
-        # ==================================================
-
+        # Create user account
         user_id = create_user(
             name,
             email,
@@ -90,7 +97,6 @@ def signup():
             student_id
         )
 
-
         return jsonify({
             "success": True,
             "message": "Account created successfully!",
@@ -98,14 +104,12 @@ def signup():
             "student_id": student_id
         }), 201
 
-
     except sqlite3.IntegrityError:
 
         return jsonify({
             "success": False,
             "message": "An account with this email already exists."
         }), 409
-
 
     except Exception as error:
 
@@ -143,77 +147,50 @@ def login():
 
     try:
 
+        # Find user
         user = get_user_by_email(email)
 
-
         if user is None:
-
             return jsonify({
                 "success": False,
                 "message": "Invalid email or password."
             }), 401
 
-
+        # Verify password
         if not verify_password(
-            user["password"],
-            password
+            password,
+            user["password"]
         ):
-
             return jsonify({
                 "success": False,
                 "message": "Invalid email or password."
             }), 401
-
-
-        # ==================================================
-        # GET STUDENT ID
-        # ==================================================
 
         student_id = user["student_id"]
 
-
-        # ==================================================
-        # OLD ACCOUNT SUPPORT
-        # ==================================================
-        # If an account was created before the student_id
-        # connection was added, create/link a student profile.
-
+        # Support older accounts without student_id
         if student_id is None:
 
-            existing_student = None
+            connection = get_connection()
 
             try:
-
-                connection = sqlite3.connect(DATABASE)
-
-                connection.row_factory = sqlite3.Row
-
                 cursor = connection.cursor()
 
                 cursor.execute("""
                     SELECT *
                     FROM students
-                    WHERE email = ?
+                    WHERE LOWER(email) = LOWER(?)
                 """, (user["email"],))
 
                 existing_student = cursor.fetchone()
 
+            finally:
                 connection.close()
 
-            except Exception as error:
-
-                print(
-                    "OLD ACCOUNT STUDENT LOOKUP ERROR:",
-                    error
-                )
-
-
             if existing_student:
-
                 student_id = existing_student["id"]
 
             else:
-
                 student_id = create_student(
                     user["name"],
                     user["email"],
@@ -222,58 +199,31 @@ def login():
                     ""
                 )
 
-
             update_user_student_id(
                 user["id"],
                 student_id
             )
 
-
-        # ==================================================
-        # LOGIN SUCCESS
-        # ==================================================
-
         return jsonify({
-
             "success": True,
-
             "message": "Login successful!",
-
             "user": {
-
-                "id":
-                    user["id"],
-
-                "student_id":
-                    student_id,
-
-                "name":
-                    user["name"],
-
-                "email":
-                    user["email"],
-
-                "education":
-                    user["education"],
-
-                "skills":
-                    user["skills"]
+                "id": user["id"],
+                "student_id": student_id,
+                "name": user["name"],
+                "email": user["email"],
+                "education": user["education"],
+                "skills": user["skills"]
             }
-
         }), 200
-
 
     except Exception as error:
 
         print("LOGIN ERROR:", error)
 
         return jsonify({
-
             "success": False,
-
-            "message":
-                "Unable to login. Please try again."
-
+            "message": "Unable to login. Please try again."
         }), 500
 
 
@@ -287,44 +237,140 @@ def login():
 )
 def get_user_profile(user_id):
 
-    user = get_user(user_id)
+    try:
 
+        user = get_user(user_id)
 
-    if user is None:
+        if user is None:
+            return jsonify({
+                "success": False,
+                "message": "User not found."
+            }), 404
 
         return jsonify({
+            "success": True,
+            "user": {
+                "id": user["id"],
+                "student_id": user["student_id"],
+                "name": user["name"],
+                "email": user["email"],
+                "education": user["education"],
+                "skills": user["skills"]
+            }
+        }), 200
 
+    except Exception as error:
+
+        print("PROFILE ERROR:", error)
+
+        return jsonify({
             "success": False,
-
-            "message":
-                "User not found."
-
-        }), 404
+            "message": "Unable to retrieve user profile."
+        }), 500
 
 
-    return jsonify({
+# ======================================================
+# FORGOT PASSWORD
+# ======================================================
 
-        "success": True,
+@auth_bp.route("/api/forgot-password", methods=["POST"])
+def forgot_password():
 
-        "user": {
+    data = request.get_json() or {}
 
-            "id":
-                user["id"],
+    email = data.get("email", "").strip().lower()
 
-            "student_id":
-                user["student_id"],
+    if not email:
+        return jsonify({
+            "success": False,
+            "message": "Email is required."
+        }), 400
 
-            "name":
-                user["name"],
+    try:
+        user = get_user_by_email(email)
 
-            "email":
-                user["email"],
+        if user is None:
+            return jsonify({
+                "success": True,
+                "message": "If the account exists, password recovery can proceed."
+            }), 200
 
-            "education":
-                user["education"],
+        token = secrets.token_urlsafe(32)
 
-            "skills":
-                user["skills"]
-        }
+        expires_at = (
+            datetime.now(timezone.utc) + timedelta(minutes=15)
+        ).isoformat()
 
-    }), 200
+        save_password_reset_token(
+            user["id"],
+            token,
+            expires_at
+        )
+
+        # LOCAL DEVELOPMENT ONLY:
+        # Do not expose reset tokens in production.
+        return jsonify({
+            "success": True,
+            "message": "Reset token generated for local testing.",
+            "reset_token": token
+        }), 200
+
+    except Exception as error:
+
+        print("FORGOT PASSWORD ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Unable to process password recovery."
+        }), 500
+
+
+# ======================================================
+# RESET PASSWORD
+# ======================================================
+
+@auth_bp.route("/api/reset-password", methods=["POST"])
+def reset_password():
+
+    data = request.get_json() or {}
+
+    token = data.get("token", "").strip()
+    new_password = data.get("new_password", "")
+
+    if not token or not new_password:
+        return jsonify({
+            "success": False,
+            "message": "Token and new password are required."
+        }), 400
+
+    if len(new_password) < 6:
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 6 characters."
+        }), 400
+
+    try:
+        success = reset_password_with_token(
+            token,
+            new_password
+        )
+
+        if not success:
+            return jsonify({
+                "success": False,
+                "message": "Invalid, expired, or already used reset token."
+            }), 400
+
+        return jsonify({
+            "success": True,
+            "message": "Password reset successfully. Please login."
+        }), 200
+
+    except Exception as error:
+
+        print("RESET PASSWORD ERROR:", error)
+
+        return jsonify({
+            "success": False,
+            "message": "Unable to reset password."
+        }), 500

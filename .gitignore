@@ -1,19 +1,20 @@
-# Environment variables
-.env
+# Virtual environments
+myenv/
+venv/
 
 # Python cache
 __pycache__/
 *.pyc
 
-# Virtual environment
-myenv/
+# Environment variables
+.env
+.env.*
 
-# SQLite database
-interviewiq.db
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
 
 # IDE files
 .vscode/
-
-# Operating system files
-.DS_Store
-Thumbs.db
+.idea/

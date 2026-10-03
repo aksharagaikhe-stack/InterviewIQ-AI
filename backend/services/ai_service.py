@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from dotenv import load_dotenv
 from google import genai
 
@@ -722,3 +723,187 @@ All scores must be numbers between 0 and 10.
         result[field] = max(0.0, min(10.0, result[field]))
 
     return result
+
+def evaluate_interview_batch(
+    student_profile,
+    answers,
+    interview_type,
+    role,
+    language,
+    category=None
+):
+    """
+    Evaluates all interview answers together using one AI request.
+    """
+
+    if not answers:
+        raise ValueError("No answers provided for evaluation.")
+
+    answers_data = []
+
+    for index, item in enumerate(answers, start=1):
+        answers_data.append({
+            "question_number": index,
+            "question": item.get("question", ""),
+            "answer": item.get("answer", "")
+        })
+
+    prompt = f"""
+You are an expert technical interviewer and interview evaluator.
+
+Evaluate all the following interview answers together.
+
+STUDENT PROFILE:
+{json.dumps(student_profile, ensure_ascii=False, default=str)}
+
+INTERVIEW DETAILS:
+Interview Type: {interview_type}
+Role: {role}
+Language: {language}
+Category: {category or "General"}
+
+QUESTIONS AND ANSWERS:
+{json.dumps(answers_data, ensure_ascii=False)}
+
+INSTRUCTIONS:
+1. Evaluate each answer independently.
+2. Consider correctness, relevance, clarity, communication, and grammar.
+3. Give scores from 0 to 10.
+4. Give personalized feedback for each answer.
+5. Identify strengths and weaknesses.
+6. Suggest specific improvements.
+7. Provide a better sample answer where appropriate.
+8. Do not invent information about the student's knowledge.
+9. Return exactly one evaluation for every submitted answer.
+10. Maintain the original question order.
+
+Return ONLY valid JSON using this structure:
+
+{{
+    "evaluations": [
+        {{
+            "technical_score": 0,
+            "relevance_score": 0,
+            "communication_score": 0,
+            "grammar_score": 0,
+            "clarity_score": 0,
+            "overall_score": 0,
+            "feedback": "",
+            "strengths": [],
+            "weaknesses": [],
+            "suggestion": "",
+            "better_answer": ""
+        }}
+    ]
+}}
+
+The evaluations array must contain exactly {len(answers)} objects.
+"""
+
+    try:
+        response = None
+
+        for attempt in range(3):
+            try:
+                response = client.models.generate_content(
+                    model=MODEL_NAME,
+                    contents=prompt
+                )
+                break
+
+            except Exception as api_error:
+                error_message = str(api_error)
+
+                is_temporary_error = (
+                    "503" in error_message
+                    or "UNAVAILABLE" in error_message
+                    or "429" in error_message
+                    or "RESOURCE_EXHAUSTED" in error_message
+                )
+
+                if not is_temporary_error or attempt == 2:
+                    raise
+
+                wait_seconds = 2 ** (attempt + 1)
+
+                print(
+                    f"AI temporarily unavailable. "
+                    f"Retrying in {wait_seconds} seconds..."
+                )
+
+                time.sleep(wait_seconds)
+
+        if response is None:
+            raise RuntimeError(
+                "AI evaluation failed after 3 attempts."
+            )
+
+        result = clean_json_response(response.text)
+
+        if not isinstance(result, dict):
+            raise ValueError("Invalid AI evaluation response.")
+
+        evaluations = result.get("evaluations")
+
+        if not isinstance(evaluations, list):
+            raise ValueError("AI response does not contain evaluations.")
+
+        if len(evaluations) != len(answers):
+            raise ValueError(
+                "AI evaluation count does not match submitted answers."
+            )
+
+        score_fields = [
+            "technical_score",
+            "relevance_score",
+            "communication_score",
+            "grammar_score",
+            "clarity_score",
+            "overall_score"
+        ]
+
+        text_fields = [
+            "feedback",
+            "suggestion",
+            "better_answer"
+        ]
+
+        normalized_evaluations = []
+
+        for evaluation in evaluations:
+
+            if not isinstance(evaluation, dict):
+                raise ValueError("Invalid individual evaluation.")
+
+            normalized = {}
+
+            for field in score_fields:
+                try:
+                    score = float(evaluation.get(field, 0))
+                except (TypeError, ValueError):
+                    score = 0
+
+                normalized[field] = max(0, min(10, score))
+
+            for field in text_fields:
+                normalized[field] = str(
+                    evaluation.get(field, "")
+                )
+
+            for field in ["strengths", "weaknesses"]:
+                value = evaluation.get(field, [])
+
+                if isinstance(value, str):
+                    value = [value]
+
+                normalized[field] = (
+                    value if isinstance(value, list) else []
+                )
+
+            normalized_evaluations.append(normalized)
+
+        return normalized_evaluations
+
+    except Exception as e:
+        print("Batch evaluation error:", str(e))
+        raise
