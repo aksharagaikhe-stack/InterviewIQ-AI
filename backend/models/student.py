@@ -12,7 +12,10 @@ BASE_DIR = os.path.dirname(
     )
 )
 
-DATABASE_PATH = os.path.join(BASE_DIR, "interviewiq.db")
+DATABASE_PATH = os.environ.get(
+    "DATABASE_PATH",
+    os.path.join(BASE_DIR, "interviewiq.db")
+)
 
 
 # ======================================================
