@@ -2,5 +2,4 @@
 // InterviewIQ AI
 // Frontend Configuration
 // ======================================================
-
-const API_URL = "http://127.0.0.1:5000";;
+const API_URL = "https://interviewiq-ai-production-2e0f.up.railway.app";
