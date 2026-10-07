@@ -16,6 +16,9 @@
     <link rel="stylesheet"
           href="css/interview.css">
 
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+
 </head>
 
 
@@ -67,28 +70,47 @@
             </div>
 
 
-            <div class="answer-section">
+           <div class="answer-section">
 
-                <label for="answer">
-                    Your Answer
-                </label>
+    <label id="answerLabel" for="answer">
+        Your Answer
+    </label>
 
-                <textarea
-                    id="answer"
-                    placeholder="Type your answer here..."
-                    rows="8">
-                </textarea>
+    <!-- Normal answer box -->
+    <textarea
+        id="answer"
+        placeholder="Type your answer here..."
+        rows="8"></textarea>
 
-                <div class="answer-info">
+    <!-- Coding editor -->
+    <div
+        id="codeEditorContainer"
+        class="code-editor-container"
+        style="display: none;">
 
-                    <span id="wordCount">
-                        0 words
-                    </span>
+        <div class="editor-toolbar">
 
-                </div>
+            <span id="selectedLanguage">
+                Python
+            </span>
 
-            </div>
+        </div>
 
+        <textarea
+            id="codeEditor"
+            spellcheck="false"></textarea>
+
+    </div>
+
+    <div class="answer-info">
+
+        <span id="wordCount">
+            0 words
+        </span>
+
+    </div>
+
+</div>
 
             <div
                 id="evaluationBox"
@@ -161,7 +183,16 @@
     </div>
 
 
-   <script src="js/config.js"></script>
+<script src="js/config.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+
 <script src="js/interview.js"></script>
 
 </body>

@@ -10,6 +10,150 @@ let currentQuestionIndex = 0;
 let answers = [];
 
 // ======================================================
+// CODE EDITOR
+// ======================================================
+
+let codeEditor = null;
+
+const codeEditorContainer =
+    document.getElementById("codeEditorContainer");
+
+const codeEditorTextarea =
+    document.getElementById("codeEditor");
+
+const selectedLanguage =
+    document.getElementById("selectedLanguage");
+
+
+// ======================================================
+// INITIALIZE CODE EDITOR
+// ======================================================
+
+function initializeCodeEditor() {
+
+    if (!codeEditorTextarea) {
+        return;
+    }
+
+    codeEditor =
+        CodeMirror.fromTextArea(
+            codeEditorTextarea,
+            {
+                lineNumbers: true,
+
+                mode: "python",
+
+                theme: "default",
+
+                indentUnit: 4,
+
+                tabSize: 4,
+
+                indentWithTabs: false,
+
+                lineWrapping: true,
+
+                autofocus: false,
+
+                extraKeys: {
+                    "Tab": function(cm) {
+                        cm.replaceSelection("    ");
+                    }
+                }
+            }
+        );
+}
+
+// ======================================================
+// SET CODE EDITOR LANGUAGE
+// ======================================================
+
+function setCodeEditorLanguage(language) {
+
+    if (!codeEditor) {
+        return;
+    }
+
+    let mode = "python";
+
+    if (language === "Python") {
+
+        mode = "python";
+
+    }
+
+    else if (language === "Java") {
+
+        mode = "text/x-java";
+
+    }
+
+    else if (
+        language === "C" ||
+        language === "C++"
+    ) {
+
+        mode = "text/x-c++src";
+
+    }
+
+    else if (language === "JavaScript") {
+
+        mode = "javascript";
+
+    }
+
+    codeEditor.setOption(
+        "mode",
+        mode
+    );
+
+    if (selectedLanguage) {
+
+        selectedLanguage.textContent =
+            language || "Python";
+
+    }
+}
+
+// ======================================================
+// CONFIGURE ANSWER AREA
+// ======================================================
+
+function configureAnswerArea() {
+
+    if (!interviewData) {
+        return;
+    }
+
+    const isCoding =
+        interviewData.interview_type === "coding";
+
+    if (isCoding) {
+
+        answer.style.display =
+            "none";
+
+        codeEditorContainer.style.display =
+            "block";
+
+        setCodeEditorLanguage(
+            interviewData.language
+        );
+
+    }
+
+    else {
+
+        answer.style.display =
+            "block";
+
+        codeEditorContainer.style.display =
+            "none";
+
+    }
+}
+// ======================================================
 // INTERVIEW TIMER
 // ======================================================
 
@@ -349,6 +493,10 @@ document.addEventListener(
 
 loadInterviewInfo();
 
+initializeCodeEditor();
+
+configureAnswerArea();
+
 loadQuestion();
 
 startInterviewTimer();
@@ -512,11 +660,26 @@ function loadQuestion() {
     // RESET ANSWER
     // ==============================================
 
+   if (
+    interviewData.interview_type === "coding" &&
+    codeEditor
+) {
+
+    codeEditor.setValue("");
+
+}
+
+else {
+
     answer.value = "";
+
+}
+
+updateWordCount();
 
 answer.disabled = false;
 
-updateWordCount();
+
 
 
     // ==============================================
@@ -620,7 +783,24 @@ function submitAnswer() {
         return;
     }
 
-    const studentAnswer = answer.value.trim();
+    let studentAnswer = "";
+
+if (
+    interviewData.interview_type === "coding" &&
+    codeEditor
+) {
+
+    studentAnswer =
+        codeEditor.getValue().trim();
+
+}
+
+else {
+
+    studentAnswer =
+        answer.value.trim();
+
+}
 
     if (!studentAnswer) {
         statusMessage.textContent = "Please enter an answer.";
