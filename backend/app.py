@@ -57,14 +57,21 @@ app = Flask(
 # CORS CONFIGURATION
 # ======================================================
 
+
+from flask_cors import CORS
+
 CORS(
     app,
     resources={
         r"/api/*": {
-            "origins": "*"
+            "origins": [
+                "https://interviewiq-ai-production-0b94.up.railway.app"
+            ]
         }
-    }
+    },
+    supports_credentials=True
 )
+
 
 
 # ======================================================
